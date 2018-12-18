@@ -127,7 +127,7 @@ Mockito.when(shipment.getReceiverAddress()).thenReturn(address);
 Mockito.when(shipment.getSenderAddress()).thenReturn(address);
 ...
 ```
-Which basically what those rules are saying in a common language is: Yeiii, when the `getReceiverAddress()` method is called return the address Mocked object please... Ahh... And when `getSenderAddress()` return again the same object. This way we guarantee that before adding a new Mockito rule for the receiver and the sender object no `NullpointerException` is thrown.
+Which basically what those rules are saying in a common language is: Yeiii, when the `getReceiverAddress()` method is called return the address Mocked object please... Ahh... And when `getSenderAddress()` return again the same object. This way before we add a new Mockito rule for the receiver and the sender object no `NullpointerException` is thrown.
 
 Then we just pass the `Shipment` object like it was retrieved from the database.
 
