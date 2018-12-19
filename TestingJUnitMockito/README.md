@@ -6,7 +6,7 @@ Back on the old Java days, I didn't even knew what JUnit was. My testing process
 But now with JUnit we have a great tool for testing, however, this tool has some limitations... For example: If we have a object that is populated by a database, it is not convenient to query that database everytime just to test a particular method or if we use a method to do some math operation from cloud service... So or we re-implement the method that receives that object for testing(which in my opinion it shouldn't be a consequence) or we just use *Mockito*.
 
 
-## Using
+## Maven dependencies
 
 * Using [JUnit](https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api/5.3.1)
 * Using [Mockito](https://mvnrepository.com/artifact/org.mockito/mockito-all/1.10.19)
