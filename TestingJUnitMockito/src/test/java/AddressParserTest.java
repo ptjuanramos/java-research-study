@@ -1,5 +1,6 @@
-import static org.junit.Assert.*;
-
+import com.juanramos.testingjunitmockito.AddressParser;
+import com.juanramos.testingjunitmockito.Shipment;
+import com.juanramos.testingjunitmockito.Shipment.Address;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -8,10 +9,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-
-import com.juanramos.testingjunitmockito.AddressParser;
-import com.juanramos.testingjunitmockito.Shipment;
-import com.juanramos.testingjunitmockito.Shipment.Address;
 
 public class AddressParserTest {
 	@Mock Shipment shipment;
@@ -31,13 +28,13 @@ public class AddressParserTest {
 	@Test
 	public void testSubstringStreetOneRecvAddress() {
 		Mockito.when(shipment.getReceiverAddress().getStreet1()).thenReturn("Street 1 test");
-		Assert.assertEquals(addressParser.substringOneRecvAddress(), "treet 1 test");
+		Assert.assertEquals("treet 1 test", addressParser.substringOneRecvAddress());
 		
 	}
 	
 	@Test
 	public void testUpperCaseStreetTwoSender() {
 		Mockito.when(shipment.getSenderAddress().getStreet2()).thenReturn("Street 2 test");
-		Assert.assertEquals(addressParser.upperCaseStreetTwoSender(), "STREET 2 TEST");
+		Assert.assertEquals("STREET 2 TEST", addressParser.upperCaseStreetTwoSender());
 	}
 }
