@@ -1,9 +1,9 @@
 ## How to use JUnit Mockito(Noobie explanation)
-Back on the old Java days, I didn't even knew what JUnit was. My testing process was:
+Back on the old Java days, I didn't even know what JUnit was. My testing process consisted in:
  - step 1: Run
- - step 2: If some red color appears that meant that It didn't worked
+ - step 2: If somethign showed up highlighted in red, it meant that it didn't worked
  
-But now with JUnit we have a great tool for testing, however, this tool has some limitations... For example: If we have a object that is populated by a database, it is not convenient to query that database everytime just to test a particular method or if we use a method to do some math operation from cloud service... So or we re-implement the method that receives that object for testing(which in my opinion it shouldn't be a consequence) or we just use *Mockito*.
+But now with JUnit we have a great tool for testing, no more excuses to create propper unit tests. However, this tool is not free of limitations. For example: If we have an object, it is not convenient to query that database whenever we need to test a particular method or employ one of those methods to perform some mathematical operation from the cloud service. So, to solve this, we are left with two options: either we re-implement the method that receives that object for testing – which, in my opinion it shouldn't be a consequence of unit test creation, or we simply use *Mockito*.
 
 
 ## Maven dependencies
@@ -13,7 +13,7 @@ But now with JUnit we have a great tool for testing, however, this tool has some
 
 ## Code snipets
 
-Imagine that you have a `Shipment` object that contains several information and that information is populate with a DB query and for a good pratice your operations are made over a `Shipment interface`:
+Imagine that you have a `Shipment` object containing several pieces of information. That information is populate with a DB query and as part of aiming for good pratice, your operations are made over `Shipment interface`:
 
 ```java
 public interface Shipment {
@@ -32,10 +32,9 @@ public interface Shipment {
   }
 }
 ```
+The curious thing about this case is that the `Shipment` interface contains another interface nested within it – the `Address` interface.
 
-The curious part is that the `Shipment` interface has another interface nested, `Address` interface.
-
-The operations that are going to be made n the `Shipment` interface is going to be called `AddressParser`, which basically will have 2 methods implemented to mess around with the information that the `Address` interface has:
+`AddressParser` was the term chosen to refer to the operations made in the `Shipment` interface. In essence, it consists in two methods implemented to “mess around” with the information accommodated in the `Address` interface:
 
 ```java
 public class AddressParser {
@@ -61,14 +60,13 @@ public class AddressParser {
 }
 ```
 
-The methods doesn't need any introductions, since that they have some comments.
+The methods themselves don’t need any further introductions, since their comments already contain the needed explanations, as shown above. 
 
 ## Why Mockito in JUnit?!
 
-Now that we have the project implemented, we need to test this... But how do we do it without creating a Db connection to populate the `Shipment`? We use Mockito:
+Now that we have the project implemented, we need to test it... But how do we achieve that without creating a Db connection to populate the `Shipment`? It’s simple: we use *Mockito*:
 
-Mockito is used for other scenarios, but for this one we are going to use it to create method stubs for the `Shipment` interface.
-The explanation is going to follow the *Watch first and understand later* method:
+Although *Mockito* is usually used for other scenarios, we are going to employ it here in order to create method stubs for the `Shipment` interface. Before any lengthy explanations, let’s just follow the *Watch first and understand later* method for now: 
 
 ```java
 public class AddressParserTest {
@@ -100,8 +98,9 @@ public class AddressParserTest {
 }
 ```
 
-As you can see we are using the `@Mock` annotation for the `Shipment` and `Address` interface. Basically by reflection, what the Mockito is doing is creating stubs of methods for those classes, dummy data but without data actually...
-For example: if you try to use the method `setShipmentReference("1234F")` it will not do anything if you didn't mock a rule for this method(`Mockito.when(...)`). But in a forensic perspective the @Mock annotation is doing these operations:
+As you can see we are using the `@Mock` annotation for both `Shipment` and the `Address` interfaces. Basically by reflection operations, Mockito is creating methods subts for those classes, or in other words, creating dummy data but without any actual data.
+For instance, if you try to use the method `setShipmentReference("1234F")` it will not do anything unless you have previously mocked a rule for this method (`Mockito.when(...)`). But from a forensic perspective, the @Mock annotation is performing the following operations:
+
 ```java
 ...
 Shipment = Mockito.mock(Shipment.class);
@@ -116,24 +115,29 @@ However, if you decide to use the Mockito annotations, you cannot forget this @R
 @Rule public MockitoRule mockitoRule = MockitoJUnit.rule();
 ...
 ```
-otherwise if you run the unit tests, it will always fail.
+Otherwise, whenever you run the unit tests, it will always fail.
 
 ### @Before
 
-Then... we have the `setup` method which is assigned as a *Before* JUnit method, that has 2 Mockito rules:
+In addition, we have the `setup` method which is assigned as a *Before* JUnit method, that has 2 Mockito rules:
+
 ```java
 ...
 Mockito.when(shipment.getReceiverAddress()).thenReturn(address);
 Mockito.when(shipment.getSenderAddress()).thenReturn(address);
 ...
 ```
-Which basically what those rules are saying in a common language is: Yeiii, when the `getReceiverAddress()` method is called return the address Mocked object please... Ahh... And when `getSenderAddress()` return again the same object. This way before we add a new Mockito rule for the receiver and the sender object no `NullpointerException` is thrown.
+Essentially, it is as if these rules are saying something of the sorts:
 
-Then we just pass the `Shipment` object like it was retrieved from the database.
+“Eiii, whenever the  `getReceiverAddress()` method is called, return the address Mocked object please... Ahh... And every time we call `getSenderAddress()`, return the same object again.”
+
+This way, before we add a new Mockito rule for the receiver and the sender objects no `NullpointerException` is thrown.
+Then, we just pass the `Shipment` object like it was retrieved from the database.
+
 
 ### @Test methods
 
-Now we need to give more conditions to Mockito in order to be able to test what ever we want with the `AddressParser` methods.
+Now we need to give more conditions to Mockito in order to be able to test whatever we want with the `AddressParser` methods.
 
 ```java
 ...
@@ -142,7 +146,7 @@ Assert.assertEquals(addressParser.substringOneRecvAddress(), "treet 1 test");
 ...
 ```
 
-To test the `substringOneRecvAddress()` method we use other rule for the chained method call `shipment.getReceiverAddress().getStreet1()`... Return the "Street 1 test" String. Then we just use JUnit like in the old days. 
+To test the `substringOneRecvAddress()` method we use different rule for the chained method call `shipment.getReceiverAddress().getStreet1()`... First, return the "Street 1 test" String. Then we just use JUnit the way we would in the old days. 
 
 ```java
 ...
@@ -150,12 +154,11 @@ Mockito.when(shipment.getSenderAddress().getStreet2()).thenReturn("Street 2 test
 Assert.assertEquals(addressParser.upperCaseStreetTwoSender(), "STREET 2 TEST");
 ...
 ```
-The same thing happens with the `upperCaseStreetTwoSender()` method, first provide a rule with the information that you want to as a return value and then "JUnit it".
-
+The same applies to the `upperCaseStreetTwoSender()` method. First, provide a rule with the information that you want to implement as return value, and after that “JUnit it”.
 
 ## References
 
-If you think that my explanation is not enough(Which is the most probable thing) you can consult more basic or complex documentations:
+If you find that my explanation is not thorough enough (which is probably the case), here are some additional sources of documentation that you can consult, ranging from basic to more complex levels of understanding:
 
 * Vogella tutorial [Vogella](http://www.vogella.com/tutorials/Mockito/article.html)
 * Official Mockito website [Mockito](https://site.mockito.org/)
